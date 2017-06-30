@@ -61,33 +61,41 @@ module.exports = function(app, passport) {
 	});
 	
 	// 패스포트 - 로컬 로그인 라우팅 
-	app.post('/login',function(req, res){
-		var request = require('request');
-		// 요청 세부 내용
-		var options = {
-			url: 'http://localhost:3000/login',
-			method:'POST',
-			form: {'email': 'aa', 'password': 'aa'}
-			//headers: headers,
-		}	
-		var str;
-		// 요청 시작 받은값은 body
-		request(options, function (error, response, body) {
-			if (!error && response.statusCode == 200) {
-				console.log(body)
-			}
-			//str = JSON.stringify(response);
-			//JSON.parse(str)
-			
-			res.redirect(response.headers.location);
-		})
-		//res.redirect('/profile');
-		/*passport.authenticate('local-login', {
-		successRedirect : '/profile', 
-		failureRedirect : '/login', 
-		failureFlash : true 
-	})*/
-	});
+	app.post('/login',
+		passport.authenticate('local-login', {
+			successRedirect : '/profile', 
+			failureRedirect : '/login', 
+			failureFlash : true 
+		}), function(req, res){
+		res.json({result:'success'});
+	}
+	);
+//		var request = require('request');
+//		// 요청 세부 내용
+//		var options = {
+//			url: 'http://localhost:3000/login',
+//			method:'POST',
+//			form: {'email': 'aa', 'password': 'aa'}
+//			//headers: headers,
+//		}	
+//		var str;
+//		// 요청 시작 받은값은 body
+//		request(options, function (error, response, body) {
+//			if (!error && response.statusCode == 200) {
+//				console.log(body)
+//			}
+//			//str = JSON.stringify(response);
+//			//JSON.parse(str)
+//			
+//			res.redirect(response.headers.location);
+//		})
+//		//res.redirect('/profile');
+//		/*passport.authenticate('local-login', {
+//		successRedirect : '/profile', 
+//		failureRedirect : '/login', 
+//		failureFlash : true 
+//	})*/
+
 
 	// 패스포트 - 로컬 회원가입 라우팅 
 	app.post('/signup', 
