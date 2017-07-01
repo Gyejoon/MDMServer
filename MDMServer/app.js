@@ -1,11 +1,4 @@
 
-/**
- * Passport 프로젝트
- * 
- * 패스포트를 이용한 로컬 사용자 인증
- * 페이스북으로 로그인, 트위터로 로그인, 구글로 로그인 기능 포함
- * 
- */
 //===== 모듈 불러들이기 =====//
 const express = require('express')
   , http = require('http')
