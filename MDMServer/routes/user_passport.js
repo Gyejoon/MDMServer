@@ -9,13 +9,14 @@
 
 //===== Passport Authentication =====//
 
+const otpadd = require('../otp/otpadd');
+const otpverify = require('../otp/otpverify');
+
 module.exports = function(app, passport) {
 
 	// 홈 화면 - 로그인 링크
 	app.get('/', function(req, res) {
 		console.log('/ 패스 요청됨.');
-
-		console.dir(req.user);
 			
 		if (req.user === undefined) {
 			res.render('index.ejs', {login_success:false});
@@ -30,29 +31,37 @@ module.exports = function(app, passport) {
 		res.render('login.ejs', {message: req.flash('loginMessage')});
 	});
 	 
-	// 회원가입 폼 링크
-	app.get('/signup', function(req, res) {
-		console.log('/signup 패스 요청됨.');
-		res.render('signup.ejs', {message: req.flash('signupMessage')});
-	});
-	 
 	// 프로필
 	app.get('/profile', function(req, res) {
 		if (!req.isAuthenticated()) {
-			res.redirect('/');
+			res.redirect('/login');
 		} else {
 			console.log('/profile 패스 요청됨.');
-			console.dir(req.user);
 			
 			if (Array.isArray(req.user)) {
-				res.render('profile.ejs', {user: req.user[0]._doc});
+				res.render('profile.ejs', {user: req.user[0]});
 			} else {
 				res.render('profile.ejs', {user: req.user});
 			}
 		}
 	});
 	
-	// ========== Auth Server에서 수행 =========== // 
+	// OTP 등록 페이지
+	app.get('/otpadd', function(req, res){
+		if(!req.isAuthenticated()){
+			res.redirect('/login');
+		} else {
+			console.log('/otpadd 패스 요청됨.');
+			otpadd.add(req, function(err, result){
+				if(err){
+					throw err;
+				}
+				res.render('otpadd.ejs', {QR : result.QR_CODE,
+					CR : result.CR_CODE});
+			});
+		}
+	});
+	
 	// 로그아웃
 	app.get('/logout', function(req, res) {
 		console.log('/logout 패스 요청됨.');
@@ -68,57 +77,12 @@ module.exports = function(app, passport) {
 			failureFlash : true 
 		}), function(req, res){
 		res.json({result:'success'});
-	}
-	);
-//		var request = require('request');
-//		// 요청 세부 내용
-//		var options = {
-//			url: 'http://localhost:3000/login',
-//			method:'POST',
-//			form: {'email': 'aa', 'password': 'aa'}
-//			//headers: headers,
-//		}	
-//		var str;
-//		// 요청 시작 받은값은 body
-//		request(options, function (error, response, body) {
-//			if (!error && response.statusCode == 200) {
-//				console.log(body)
-//			}
-//			//str = JSON.stringify(response);
-//			//JSON.parse(str)
-//			
-//			res.redirect(response.headers.location);
-//		})
-//		//res.redirect('/profile');
-//		/*passport.authenticate('local-login', {
-//		successRedirect : '/profile', 
-//		failureRedirect : '/login', 
-//		failureFlash : true 
-//	})*/
-
-
-	// 패스포트 - 로컬 회원가입 라우팅 
-	app.post('/signup', 
-		passport.authenticate('local-signup', {
-			successRedirect : '/profile', 
-			failureRedirect : '/signup', 
-			failureFlash : true 
-		})
-	);
-
-	// 패스포트 - 페이스북 인증 라우팅 
-	app.get('/auth/facebook', 
-		passport.authenticate('facebook', { 
-			scope : 'email' 
-		})
-	);
-
-	// 패스포트 - 페이스북 인증 콜백 라우팅
-	app.get('/auth/facebook/callback',
-	    passport.authenticate('facebook', {
-	        successRedirect : '/profile',
-	        failureRedirect : '/'
-	    })
-	);
-
+	});
+	
+	app.post('/otpverify', function(req, res){
+		console.log('/otpverify 패스 요청됨.');
+		otpverify.verify(req, function(results){
+			res.json({result : results});
+		});
+	});
 };

@@ -22,7 +22,9 @@
     "jsonwebtoken": "^7.4.1",
     "mongodb": "^2.2.5",
     "mongoose": "^4.5.8",
+    "mysql": "^2.14.1",
     "node-gcm": "^0.14.6",
+    "notp": "^2.0.3",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
     "passport-google-oauth": "^1.0.0",
@@ -30,7 +32,8 @@
     "passport-twitter": "^1.0.4",
     "path": "^0.11.14",
     "request": "^2.81.0",
-    "socket.io": "^1.3.5"
+    "socket.io": "^1.3.5",
+    "thirty-two": "0.0.2"
   },
   "devDependencies": {
     "eslint": "^3.19.0"

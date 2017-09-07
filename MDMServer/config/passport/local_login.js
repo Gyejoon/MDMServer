@@ -3,35 +3,43 @@
  * Passport - Local 설정
  */
 
-var LocalStrategy = require('passport-local').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
+const crypto = require('crypto');
 
 module.exports = new LocalStrategy({
-	usernameField : 'email',
-	passwordField : 'password',
+	usernameField : 'employee_num',
+	passwordField : 'Password',
 	passReqToCallback : true 
-}, function(req, email, password, done) { 
-	console.log('passport의 local-login 호출됨 : ' + email + ', ' + password);
+}, function(req, emp, password, done) { 
+	console.log('passport의 local-login 호출됨');
 	
-	var database = req.app.get('database');
-    database.UserModel.findOne({ 'email' :  email }, function(err, user) {
-    	if (err) { return done(err); }
-
-    	// 등록된 사용자가 없는 경우
-    	if (!user) {
-    		console.log('계정이 일치하지 않음.');
-    		return done(null, false, req.flash('loginMessage', '등록된 계정이 없습니다.'));
+	password = crypto.createHash('sha256').update(password).digest('hex');
+	
+	const database = req.app.get('database');    	
+    database.getConnection(function(err, connection){
+    	if(err){
+    		connection.release();
+    		return done(err);
     	}
-    	
-    	// 비밀번호 비교하여 맞지 않는 경우
-		var authenticated = user.authenticate(password, user._doc.salt, user._doc.hashed_password);
-		if (!authenticated) {
-			console.log('비밀번호 일치하지 않음.');
-			return done(null, false, req.flash('loginMessage', '비밀번호가 일치하지 않습니다.'));
-		} 
-		
-		// 정상인 경우
-		console.log('계정과 비밀번호가 일치함.');
-		return done(null, user);
+    	connection.query('select employee_num, Name, Rank, Department, ' +
+    			'Date_of_birth, Address, Ecn_num, device_info.created_at, OTP from user_info ' +
+    			'inner join device_info ' +
+    			'on employee_num = User_info_employee_num ' +
+    			'where employee_num = ? and Password = ?;',[
+    				emp, password
+    			], function(err, user){
+    		if(err){
+    			connection.release();
+    			return done(err);
+    		}
+    		if(!user[0]){
+    			console.log('로그인 실패.');
+    			connection.release();
+    			return done(null, false, req.flash('loginMessage', '사원번호가 없거나 비밀번호가 일치하지 않습니다.'));
+    		}
+    		console.log('로그인 성공');
+    		connection.release();
+    		return done(null, user);
+    	});
     });
-
 });

@@ -7,8 +7,6 @@ const express = require('express')
 
 const config = require('./config/config');
 const database = require('./database/database');
-const route_loader = require('./routes/route_loader');
-const handler_loader = require('./handlers/handler_loader');
 
 
 const bodyParser = require('body-parser');
@@ -21,10 +19,6 @@ const expressErrorHandler = require('express-error-handler');
 const passport = require('passport');
 const flash = require('connect-flash');
 
-
-// 제이슨 사용
-const jayson = require('jayson');
-
 //===== Express 서버 객체 만들기 =====//
 const app = express();
 
@@ -32,8 +26,6 @@ const app = express();
 //===== 뷰 엔진 설정 =====//
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-
-
 
 //===== 서버 변수 설정 및 static으로 public 폴더 설정  =====//
 console.log('config.server_port : %d', config.server_port);
@@ -44,7 +36,7 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(express.json());
-
+app.use(express.logger('dev'));
 app.use(cookieParser());
 app.use(expressSession({
 	secret:'my key',
@@ -59,16 +51,8 @@ app.use(passport.session());
 app.use(flash());
 
 
-
 //===== 라우터 미들웨어 사용 =====//
 app.use(app.router);
-
-//라우팅 정보를 읽어들여 라우팅 설정
-route_loader.init(app);
-
-//==== json 관련 라우팅 및 설정 ====// 
-var jsonrpc_api_path = config.jsonrpc_api_path || '/api';
-handler_loader.init(jayson, app, jsonrpc_api_path);
 
 //===== Passport 관련 라우팅 및 설정 =====//
 

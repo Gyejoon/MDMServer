@@ -29,11 +29,12 @@
 	<body>
 		<div class="container">
 		    <div class="jumbotron text-center">
-		        <h1><span class="fa fa-shopping-cart"></span> 쇼핑몰 홈</h1>
+		        <h1><span class="fa fa-shopping-cart"></span> 사원 프로필 홈</h1>
 				<br>
 				<% if (login_success) { %>
 					<p>로그인되어 있습니다.</p>
 					<br>
+					<a href="/profile" class="btn btn-default"><span class="fa fa-user"></span>프로필</a>
 					<a href="/logout" class="btn btn-default"><span class="fa fa-user"></span>로그아웃</a>
 				<% } else { %>
 					<p>로그인하세요.<p>

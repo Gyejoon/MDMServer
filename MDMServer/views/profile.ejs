@@ -8,7 +8,7 @@
 		
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
     	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
-    	
+    	<script src = "../public/jquery-2.1.4.min.js"></script>
     	<style>
         	body        { padding-top:80px; }
     	</style>
@@ -29,38 +29,27 @@
 		            <div class="well">
 		            
 		            	<% if (user.provider == undefined || user.provider == '') { %>
-			                <h3><span class="fa fa-user"></span> 로컬 프로필</h3>
+			                <h3><span class="fa fa-user"></span> 사원 프로필</h3>
 							<br>
 							<p>
-								<strong>이메일</strong>: <%= user.email %><br><br>
-		                		<strong>별명</strong>: <%= user.name %>
+								<strong id ="emp">사원번호</strong>: <%= user.employee_num %><br><br>
+		                		<strong>이름</strong>: <%= user.Name %><br><br>
+		                		<strong>직급</strong>: <%= user.Rank %><br><br>
+		                		<strong>부서</strong>: <%= user.Department %><br><br>
+		                		<strong>생일</strong>: <%= user.Date_of_birth %><br><br>
+		                		<strong>주소</strong>: <%= user.Address %><br><br>
+		                		<strong>비상연락망</strong>: <%= user.Ecn_num %><br><br>
+		                		<strong>가입날짜</strong>: <%= user.created_at %><br><br>
+		                		<%if(user.OTP == 'NO') { %>
+		                			<a href="#" 
+		                			onclick="window.open('/otpadd','_blank', 'width=600 height=500');return false"
+		                			class="btn btn-default" id="otpadd"><span class="fa fa-user"></span>OTP등록</a>
+		                		<%} else { %>
+		                			<strong>OTP등록완료</strong>
+		                		<%} %>
 			                </p>
-			            <% } else if (user.provider == 'facebook') { %>
-							<h3 class="text-primary"><span class="fa fa-facebook"></span> 페이스북 프로필</h3>
-							<br>
-		                    <p>
-		                        <strong>아이디</strong>: <%= user.facebook.id %><br><br>
-		                        <strong>이메일</strong>: <%= user.facebook.email %><br><br>
-		                        <strong>이름</strong>: <%= user.facebook.name %>
-		                    </p>
-		                <% } else if (user.provider == 'twitter') { %>
-							<h3 class="text-primary"><span class="fa fa-twitter"></span> 트위터 프로필</h3>
-							<br>
-		                    <p>
-		                        <strong>아이디</strong>: <%= user.twitter.id %><br><br>
-		                        <strong>이메일</strong>: <%= user.twitter.email %><br><br>
-		                        <strong>이름</strong>: <%= user.twitter.name %>
-		                    </p>
-		                <% } else if (user.provider == 'google') { %>
-							<h3 class="text-primary"><span class="fa fa-google"></span> 구글 프로필</h3>
-							<br>
-		                    <p>
-		                        <strong>아이디</strong>: <%= user.google.id %><br><br>
-		                        <strong>이메일</strong>: <%= user.google.email %><br><br>
-		                        <strong>이름</strong>: <%= user.google.name %>
-		                    </p>
+			                
 						<% } %>
-		                	
 						<br>
 		            </div>
 		        </div>
