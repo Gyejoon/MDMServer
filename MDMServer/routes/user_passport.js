@@ -46,22 +46,6 @@ module.exports = function(app, passport) {
 		}
 	});
 	
-	// OTP 등록 페이지
-	app.get('/otpadd', function(req, res){
-		if(!req.isAuthenticated()){
-			res.redirect('/login');
-		} else {
-			console.log('/otpadd 패스 요청됨.');
-			otpadd.add(req, function(err, result){
-				if(err){
-					throw err;
-				}
-				res.render('otpadd.ejs', {QR : result.QR_CODE,
-					CR : result.CR_CODE});
-			});
-		}
-	});
-	
 	// 로그아웃
 	app.get('/logout', function(req, res) {
 		console.log('/logout 패스 요청됨.');
@@ -83,6 +67,18 @@ module.exports = function(app, passport) {
 		console.log('/otpverify 패스 요청됨.');
 		otpverify.verify(req, function(results){
 			res.json({result : results});
+		});
+	});
+	
+	// OTP 등록 페이지
+	app.post('/otpadd', function(req, res){
+		console.log('/otpadd 패스 요청됨.');
+		otpadd.add(req, function(err, result){
+			if(err){
+				throw err;
+			}
+			res.send(JSON.stringify({QR : result.QR_CODE,
+				CR : result.CR_CODE}));
 		});
 	});
 };
