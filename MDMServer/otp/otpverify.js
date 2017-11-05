@@ -1,4 +1,4 @@
-const notp = require('notp');
+﻿const notp = require('notp');
 const otpadd = require('./otpadd');
 const otpdao = require('../database/otpdao');
 
@@ -14,10 +14,11 @@ otpverify.verify = function(req, callback){
             console.log('OTP 인증 성공');
             otpdao.checkforupdate(database, paramId);
             otpdao.history(database, paramId, "인증 성공");
-            return callback({result : "Success"});
+            return callback("Success");
         } else {
+	    console.log('OTP 인증 실패');
             otpdao.history(database, paramId, "인증 실패");
-        	return callback({result : "Failed"});
+        	return callback("Failed");
         }
 	});
 };

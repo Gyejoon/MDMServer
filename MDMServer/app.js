@@ -1,4 +1,4 @@
-
+﻿
 //===== 모듈 불러들이기 =====//
 const express = require('express')
   , http = require('http')
@@ -30,6 +30,7 @@ app.set('view engine', 'ejs');
 //===== 서버 변수 설정 및 static으로 public 폴더 설정  =====//
 console.log('config.server_port : %d', config.server_port);
 app.set('port', config.server_port);
+app.set('https', config.https_port);
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 //===== body-parser, cookie-parser, express-session 사용 설정 =====//
@@ -92,6 +93,22 @@ process.on('SIGTERM', function () {
     app.close();
 });
 
+//start backend with functionalities of both of API server and OAuth2 Server)
+const https = require('https');
+const fs = require('fs');
+const debug = require('debug')('backend');
+
+// This is just selfsigned certificate. 
+// for product, you can replace this to own certificates  
+const privateKey = './ssl/key.pem';
+const publicCert = './ssl/public.cert';
+const publicCertPassword = '12345';
+const httpsConfig = {
+    key: fs.readFileSync(privateKey),
+    cert: fs.readFileSync(publicCert),
+    passphrase: publicCertPassword
+};
+
 app.on('close', function () {
 	console.log("Express 서버 객체가 종료됩니다.");
 	if (database.db) {
@@ -100,10 +117,16 @@ app.on('close', function () {
 });
 
 // 시작된 서버 객체를 리턴받도록 합니다. 
-var server = http.createServer(app).listen(app.get('port'), function(){
+const server = http.createServer(app).listen(app.get('port'), function(){
 	console.log('서버가 시작되었습니다. 포트 : ' + app.get('port'));
 
 	// 데이터베이스 초기화
 	database.init(app, config);
    
+});
+
+
+//https protocol
+const sslServer = https.createServer(httpsConfig, app).listen(app.get('https'), function(){
+	console.log('Express SSL server listening on port ' + app.get('https'));
 });

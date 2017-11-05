@@ -3,8 +3,8 @@ var t2 = require('thirty-two');
 
 otpadd.add = function(req, callback){
 	const database = req.app.get('database');
-	const emp = req.user[0].employee_num;
-	const name = req.user[0].Name;
+	const emp = req.body.employee_num;
+	const name = req.body.Name;
 	
 	database.getConnection(function(err, connection){
 		if(err){
@@ -26,7 +26,7 @@ otpadd.add = function(req, callback){
 					    var SendData = {
 					    	QR_CODE : 'http://qrcode.kaywa.com/img.php?s=8&d=' + 
 					    	encodeURIComponent('otpauth://totp/' + name +'?secret=' + b32),
-					    	CR_CODE : b32
+					    	CR_CODE : b32.toString()
 					    };
 					    connection.release();
 					    return callback(null, SendData);

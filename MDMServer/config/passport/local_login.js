@@ -1,4 +1,4 @@
-
+﻿
 /*
  * Passport - Local 설정
  */
@@ -22,7 +22,7 @@ module.exports = new LocalStrategy({
     		return done(err);
     	}
     	connection.query('select employee_num, Name, Rank, Department, ' +
-    			'Date_of_birth, Address, Ecn_num, device_info.created_at, OTP from user_info ' +
+    			'Date_of_birth, Address, device_info.created_at, OTP from user_info ' +
     			'inner join device_info ' +
     			'on employee_num = User_info_employee_num ' +
     			'where employee_num = ? and Password = ?;',[
