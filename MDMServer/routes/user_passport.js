@@ -77,12 +77,7 @@ module.exports = function(app, passport) {
 			if(err){
 				throw err;
 			}
-<<<<<<< HEAD
 			res.json(result);
-=======
-			res.send(JSON.stringify({QR : result.QR_CODE,
-				CR : result.CR_CODE}));
->>>>>>> branch 'master' of https://github.com/Gyejoon/MDMServer
 		});
 	});
 };
