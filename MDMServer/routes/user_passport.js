@@ -1,15 +1,4 @@
-﻿
-/*
- * 데이터베이스 관련 객체들을 init() 메소드로 설정
- * 
- * 데이터베이스 관련 객체들을 req.app.get('database')로 참조
- * 
- */
-
-
-//===== Passport Authentication =====//
-
-const otpadd = require('../otp/otpadd');
+﻿const otpadd = require('../otp/otpadd');
 const otpverify = require('../otp/otpverify');
 
 module.exports = function(app, passport) {
